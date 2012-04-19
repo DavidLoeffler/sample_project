@@ -16,3 +16,6 @@
 
 # Ignore RubyMine project directory
 /.idea/
+
+# Ignore doc directory for now
+/doc
