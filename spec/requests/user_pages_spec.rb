@@ -35,11 +35,83 @@ describe "User pages" do
 
         it { should have_selector('title', text: 'Sign up') }
         it { should have_content('error') }
+        it { should have_content("Name can't be blank") }
         it { should have_content("Password can't be blank") }
         it { should have_content("Email can't be blank") }
         it { should have_content('Email is invalid') }
         it { should have_content('Password is too short (minimum is 6 characters)') }
         it { should have_content("Password confirmation can't be blank") }
+      end
+
+      describe "just user name" do
+        before do
+          fill_in "Name", with: "Example User"
+          click_button submit
+        end
+
+        it { should have_selector('title', text: 'Sign up') }
+        it { should have_content('error') }
+        it { should_not have_content("Name can't be blank") }
+        it { should have_content("Password can't be blank") }
+        it { should have_content("Email can't be blank") }
+        it { should have_content('Email is invalid') }
+        it { should have_content('Password is too short (minimum is 6 characters)') }
+        it { should have_content("Password confirmation can't be blank") }
+      end
+
+      describe "invalid email" do
+        before do
+          fill_in "Name", with: "Example User"
+          fill_in "Email", with: "user@example"
+          click_button submit
+        end
+
+        it { should have_selector('title', text: 'Sign up') }
+        it { should have_content('error') }
+        it { should_not have_content("Name can't be blank") }
+        it { should have_content("Password can't be blank") }
+        it { should_not have_content("Email can't be blank") }
+        it { should have_content('Email is invalid') }
+        it { should have_content('Password is too short (minimum is 6 characters)') }
+        it { should have_content("Password confirmation can't be blank") }
+      end
+
+      describe "invalid password" do
+        before do
+          fill_in "Name", with: "Example User"
+          fill_in "Email", with: "user@example.com"
+          fill_in "Password", with: "fooba"
+          click_button submit
+        end
+
+        it { should have_selector('title', text: 'Sign up') }
+        it { should have_content('error') }
+        it { should_not have_content("Name can't be blank") }
+        it { should_not have_content("Password can't be blank") }
+        it { should_not have_content("Email can't be blank") }
+        it { should_not have_content('Email is invalid') }
+        it { should have_content('Password is too short (minimum is 6 characters)') }
+        it { should have_content("Password confirmation can't be blank") }
+      end
+
+      describe "with non-matching confirmation" do
+        before do
+          fill_in "Name", with: "Example User"
+          fill_in "Email", with: "user@example.com"
+          fill_in "Password", with: "foobar"
+          fill_in "Confirmation", with: "foobarr"
+          click_button submit
+        end
+
+        it { should have_selector('title', text: 'Sign up') }
+        it { should have_content('error') }
+        it { should_not have_content("Name can't be blank") }
+        it { should_not have_content("Password can't be blank") }
+        it { should_not have_content("Email can't be blank") }
+        it { should_not have_content('Email is invalid') }
+        it { should_not have_content('Password is too short (minimum is 6 characters)') }
+        it { should_not have_content("Password confirmation can't be blank") }
+        it { should have_content("Password doesn't match confirmation") }
       end
     end
 
